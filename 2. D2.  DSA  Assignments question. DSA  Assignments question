@@ -1,0 +1,522 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "331be0c9",
+   "metadata": {},
+   "source": [
+    "# **Question 1**\n",
+    "Given an integer array nums of 2n integers, group these integers into n pairs (a1, b1), (a2, b2),..., (an, bn) such that the sum of min(ai, bi) for all i is maximized. Return the maximized sum.\n",
+    "\n",
+    "**Example 1:**\n",
+    "Input: nums = [1,4,3,2]\n",
+    "Output: 4\n",
+    "\n",
+    "**Explanation:** All possible pairings (ignoring the ordering of elements) are:\n",
+    "\n",
+    "1. (1, 4), (2, 3) -> min(1, 4) + min(2, 3) = 1 + 2 = 3\n",
+    "2. (1, 3), (2, 4) -> min(1, 3) + min(2, 4) = 1 + 2 = 3\n",
+    "3. (1, 2), (3, 4) -> min(1, 2) + min(3, 4) = 1 + 3 = 4\n",
+    "So the maximum possible sum is 4"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "657a6fa4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "It’s trivial if we’d like to make min(ai, bi) as large as possible, we have to make the smaller one of (ai,bi) as large as possible. The easiest way is to put (max, second_max) elements together so we can retrieve value of second_max. And for rest elements, we do the same approach for them, which means we put (third_max, forth_max) elements together so we can get value of forth_max.\n",
+    "\n",
+    "For doing this approach, we can simply sort original list, group them two by two, take the smaller ones out and sum them up."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "94961470",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Python3\n",
+    "class Solution:\n",
+    "    def arrayPairSum(self, nums):\n",
+    "        \"\"\"\n",
+    "        :type nums: List[int]\n",
+    "        :rtype: int\n",
+    "        \"\"\"\n",
+    "\n",
+    "        # approach: sort list, take smaller ones and sum them up\n",
+    "\n",
+    "        nums.sort()\n",
+    "        return sum(nums[::2])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "372be5e5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Because we don’t know the domain values of input nums. We should use comparison-based sorting schema so it will take O(nlogn) time which n denotes to length of nums. And, sum each smaller element will take O(n/2) time. Therefore, total time complexity will be O(nlogn + n/2) = O(nlogn).\n",
+    "\n",
+    "Fortunately, there exists in place comparison-based sorting algorithm (e.g. Heap Sort) so it only needs O(1) extra space."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "be6de6af",
+   "metadata": {},
+   "source": [
+    "# Question 2\n",
+    "Alice has n candies, where the ith candy is of type candyType[i]. Alice noticed that she started to gain weight, so she visited a doctor. \n",
+    "\n",
+    "The doctor advised Alice to only eat n / 2 of the candies she has (n is always even). Alice likes her candies very much, and she wants to eat the maximum number of different types of candies while still following the doctor's advice. \n",
+    "\n",
+    "Given the integer array candyType of length n, return the maximum number of different types of candies she can eat if she only eats n / 2 of them.\n",
+    "\n",
+    "Example 1:\n",
+    "Input: candyType = [1,1,2,2,3,3]\n",
+    "Output: 3\n",
+    "\n",
+    "Explanation: Alice can only eat 6 / 2 = 3 candies. Since there are only 3 types, she can eat one of each type."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2d0a2480",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "class Solution:\n",
+    "    def distributeCandies(self, candyType: List[int]) -> int:\n",
+    "        seen = {}\n",
+    "        i = 0\n",
+    "        amount_allowed = 0\n",
+    "        while(i<len(candyType) and amount_allowed<len(candyType)//2):\n",
+    "            if seen.get(candyType[i],0)==0:\n",
+    "                amount_allowed+=1\n",
+    "                seen[candyType[i]] = 1\n",
+    "            i+=1\n",
+    "        return amount_allowed"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "bace4fb4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Time complexity:\n",
+    "O(n) becuase we went over the array once\n",
+    "\n",
+    "Space complexity:\n",
+    "O(n) becuase we saved at most n/2 numbers."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a30caedb",
+   "metadata": {},
+   "source": [
+    "# Question 3\n",
+    "We define a harmonious array as an array where the difference between its maximum value\n",
+    "and its minimum value is exactly 1.\n",
+    "\n",
+    "Given an integer array nums, return the length of its longest harmonious subsequence\n",
+    "among all its possible subsequences.\n",
+    "\n",
+    "A subsequence of an array is a sequence that can be derived from the array by deleting some or no elements without changing the order of the remaining elements.\n",
+    "\n",
+    "Example 1:\n",
+    "Input: nums = [1,3,2,2,5,2,3,7]\n",
+    "Output: 5\n",
+    "\n",
+    "Explanation: The longest harmonious subsequence is [3,2,2,2,3]."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "03f1c1c7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "To solve this problem, you can iterate through the array and use a hash map to keep track of the frequency of each element in the array. Then, iterate through the hash map and for each element check if there is another element in the hash map whose value is one greater than the current element. If so, add the frequency of the current element to the frequency of the element that is one greater, and update the maximum length of the harmonious subsequence. Finally, return the maximum length of the harmonious subsequence."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ac43005a",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Approach\n",
+    "In this implementation, the function first creates a dictionary freq to keep track of the frequency of each element in the input array nums.\n",
+    "Then it iterates through freq dictionary and checks if there is another element in the dictionary whose value is one greater than the current element. If such element exist, it finds the max_length of the harmonious sub sequence by adding the value of current element and the value of next element in the dictionary and compares it with the previous max_length.\n",
+    "Finally, it returns the max_length of the harmonious subsequence."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "308c93c0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "class Solution:\n",
+    "    def findLHS(self, nums: List[int]) -> int:\n",
+    "        freq = {}\n",
+    "        for num in nums:\n",
+    "            freq[num] = freq.get(num, 0) + 1\n",
+    "        max_length = 0\n",
+    "        for num in freq:\n",
+    "            if num + 1 in freq:\n",
+    "                max_length = max(max_length, freq[num] + freq[num + 1])\n",
+    "        return max_length"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e07000ab",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Time complexity:\n",
+    "The first for loop iterates through the input array nums and populates the frequency dictionary freq, which takes O(n) time.\n",
+    "\n",
+    "Space complexity:\n",
+    "The space complexity is O(n) as we are using a dictionary to store the frequency of the element, which can take at most O(n) space in the worst case."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "02b03886",
+   "metadata": {},
+   "source": [
+    "# Question 4\n",
+    "You have a long flowerbed in which some of the plots are planted, and some are not.\n",
+    "However, flowers cannot be planted in adjacent plots.\n",
+    "Given an integer array flowerbed containing 0's and 1's, where 0 means empty and 1 means not empty, and an integer n, return true if n new flowers can be planted in the flowerbed without violating the no-adjacent-flowers rule and false otherwise.\n",
+    "\n",
+    "Example 1:\n",
+    "Input: flowerbed = [1,0,0,0,1], n = 1\n",
+    "Output: true"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "075aa530",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Time Complexity: O(n) as we are just iterating the array once.\n",
+    "\n",
+    "Space Complexity: O(1) as we are not using any extra space."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "fe103014",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "class Solution:\n",
+    "    def canPlaceFlowers(self, flowerbed: List[int], n: int) -> bool:\n",
+    "        if n == 0:\n",
+    "            return True\n",
+    "        flowerbed.append(0)\n",
+    "        k = 0\n",
+    "        i = 0\n",
+    "        while i < len(flowerbed)-1:\n",
+    "            if flowerbed[i+1] == 0:\n",
+    "                if flowerbed[i] == 0:\n",
+    "                    k += 1\n",
+    "                    if k == n:\n",
+    "                        return True\n",
+    "\n",
+    "                i += 2\n",
+    "            else:\n",
+    "                i += 3\n",
+    "        \n",
+    "        return False\n",
+    "'''\n",
+    "            if flowerbed[i] == 0:\n",
+    "                if flowerbed[i+1] == 0:\n",
+    "                    k += 1\n",
+    "                    i += 2\n",
+    "                    if k == n:\n",
+    "                        return True\n",
+    "                else:\n",
+    "                    \n",
+    "                    i += 3\n",
+    "            else:\n",
+    "                if flowerbed[i+1] == 0:\n",
+    "                    i += 2\n",
+    "                else:\n",
+    "                    i += 3"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1422c9b7",
+   "metadata": {},
+   "source": [
+    "# Question 5\n",
+    "Given an integer array nums, find three numbers whose product is maximum and return the maximum product.\n",
+    "\n",
+    "Example 1:\n",
+    "Input: nums = [1,2,3]\n",
+    "Output: 6"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f9e50b37",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Solution using Heap concept\n",
+    "\n",
+    "class Solution:\n",
+    "    def maximumProduct(self, nums: List[int]) -> int:\n",
+    "        pos=heapq.nlargest(3,nums)\n",
+    "        neg=heapq.nsmallest(2,nums)\n",
+    "        return max(neg[0]*neg[1]*pos[0],pos[0]*pos[1]*pos[2])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "41d32caa",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "class Solution:\n",
+    "    def maximumProduct(self, vec: List[int]) -> int:\n",
+    "        if len(vec) == 3:\n",
+    "            return vec[0] * vec[1] * vec[2]\n",
+    "        max1 = max2 = max3 = -1000 \n",
+    "        min1 = min2 = 1000\n",
+    "        for i in vec:\n",
+    "            if i > max1:\n",
+    "                max3 = max2\n",
+    "                max2 = max1\n",
+    "                max1 = i\n",
+    "            elif i > max2:\n",
+    "                max3 = max2\n",
+    "                max2 = i\n",
+    "            elif i > max3:\n",
+    "                max3 = i\n",
+    "            if i < min1:\n",
+    "                min2 = min1\n",
+    "                min1 = i\n",
+    "            elif i < min2:\n",
+    "                min2 = i\n",
+    "        return max(max1 * max2 * max3, min1 * min2 * max1)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "fdb2c182",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Time complexity: O(n)\n",
+    "Space complexity: O(1)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6f5286b8",
+   "metadata": {},
+   "source": [
+    "# Question 6\n",
+    "\n",
+    "Given an array of integers nums which is sorted in ascending order, and an integer target,\n",
+    "write a function to search target in nums. If target exists, then return its index. Otherwise,\n",
+    "return -1.\n",
+    "\n",
+    "You must write an algorithm with O(log n) runtime complexity.\n",
+    "\n",
+    "Input: nums = [-1,0,3,5,9,12], target = 9\n",
+    "Output: 4\n",
+    "\n",
+    "Explanation: 9 exists in nums and its index is 4"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "fb3f453d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "class Solution:\n",
+    "    def search(self, nums: List[int], target: int) -> int:\n",
+    "        left = 0\n",
+    "        right = len(nums) - 1\n",
+    "        if len(nums) == 1 and nums[0] == target:\n",
+    "            return 0\n",
+    "        \n",
+    "        while left <= right:\n",
+    "            mid = (left + right)//2\n",
+    "        \n",
+    "            if nums[mid] == target:\n",
+    "                return mid\n",
+    "        \n",
+    "            elif nums[mid] > target:\n",
+    "                right = mid - 1\n",
+    "        \n",
+    "            else:\n",
+    "                left = mid + 1\n",
+    "        \n",
+    "        return -1"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "c1f7eb86",
+   "metadata": {},
+   "source": [
+    "# Question 7\n",
+    "An array is monotonic if it is either monotone increasing or monotone decreasing.\n",
+    "\n",
+    "An array nums is monotone increasing if for all i <= j, nums[i] <= nums[j]. An array nums is\n",
+    "monotone decreasing if for all i <= j, nums[i] >= nums[j].\n",
+    "\n",
+    "Given an integer array nums, return true if the given array is monotonic, or false otherwise.\n",
+    "\n",
+    "Example 1:\n",
+    "Input: nums = [1,2,2,3]\n",
+    "Output: true"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "1f2df2cf",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Yes\n"
+     ]
+    }
+   ],
+   "source": [
+    "def check(arr):\n",
+    "    N = len(arr)\n",
+    "    inc = True\n",
+    "    dec = True\n",
+    "     \n",
+    "    # Loop to check if array is increasing\n",
+    "    for i in range(0, N-1):\n",
+    "       \n",
+    "        # To check if array is not increasing\n",
+    "        if arr[i] > arr[i+1]:\n",
+    "            inc = False\n",
+    " \n",
+    "    # Loop to check if array is decreasing\n",
+    "    for i in range(0, N-1):\n",
+    "       \n",
+    "       # To check if array is not decreasing\n",
+    "        if arr[i] < arr[i+1]:\n",
+    "            dec = False\n",
+    " \n",
+    "    # Pick one whether inc or dec\n",
+    "    return inc or dec\n",
+    " \n",
+    "# Driver code\n",
+    "if __name__ == \"__main__\":\n",
+    "    arr = [1, 2, 3, 3]\n",
+    " \n",
+    "    # Function call\n",
+    "    ans = check(arr)\n",
+    "    if ans == True:\n",
+    "        print(\"Yes\")\n",
+    "    else:\n",
+    "        print(\"No\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "07a8463f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Time Complexity: O(N)\n",
+    "Auxiliary Space: O(1)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "69f56868",
+   "metadata": {},
+   "source": [
+    "# Question 8\n",
+    "You are given an integer array nums and an integer k.\n",
+    "\n",
+    "In one operation, you can choose any index i where 0 <= i < nums.length and change nums[i] to nums[i] + x where x is an integer from the range [-k, k]. You can apply this operation at most once for each index i.\n",
+    "\n",
+    "The score of nums is the difference between the maximum and minimum elements in nums.\n",
+    "\n",
+    "Return the minimum score of nums after applying the mentioned operation at most once for each index in it.\n",
+    "\n",
+    "Example 1:\n",
+    "Input: nums = [1], k = 0\n",
+    "Output: 0\n",
+    "\n",
+    "Explanation: The score is max(nums) - min(nums) = 1 - 1 = 0."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "325695c1",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "class Solution:\n",
+    "    def smallestRangeI(self, nums: List[int], k: int) -> int:\n",
+    "        x=max(nums)\n",
+    "        y=min(nums)\n",
+    "        return max(0,(x-k)-(y+k))"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.7"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
